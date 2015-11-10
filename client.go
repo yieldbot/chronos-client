@@ -26,7 +26,8 @@ type Client struct {
 func (cl Client) Jobs() ([]Job, error) {
 
 	// Get jobs
-	res, err := cl.request("GET", "/scheduler/jobs")
+	req, err := http.NewRequest("GET", cl.URL+"/scheduler/jobs", nil)
+	res, err := cl.doRequest(req)
 	if err != nil {
 		return nil, errors.New("failed to fetch jobs due to " + err.Error())
 	}
@@ -82,8 +83,9 @@ func (cl Client) RunJob(name, args string) (bool, error) {
 		query += fmt.Sprintf("?arguments=%s", args)
 	}
 
-	// Delete job
-	res, err := cl.request("PUT", "/scheduler/job/"+query)
+	// Run job
+	req, err := http.NewRequest("PUT", cl.URL+"/scheduler/job/"+query, nil)
+	res, err := cl.doRequest(req)
 	if bytes.Index(res, []byte("not found")) != -1 {
 		return true, errors.New(name + " job couldn't be found")
 	} else if err != nil {
@@ -102,7 +104,8 @@ func (cl Client) DeleteJob(name string) (bool, error) {
 	}
 
 	// Delete job
-	res, err := cl.request("DELETE", "/scheduler/job/"+name)
+	req, err := http.NewRequest("DELETE", cl.URL+"/scheduler/job/"+name, nil)
+	res, err := cl.doRequest(req)
 	if err != nil {
 		return false, errors.New("failed to delete job due to " + err.Error())
 	} else if bytes.Index(res, []byte("not found")) != -1 {
@@ -121,8 +124,9 @@ func (cl Client) KillTasks(name string) (bool, error) {
 		return false, errors.New("invalid job name")
 	}
 
-	// Delete job
-	_, err := cl.request("DELETE", "/scheduler/task/kill/"+name)
+	// Kill job tasks
+	req, err := http.NewRequest("DELETE", cl.URL+"/scheduler/task/kill/"+name, nil)
+	_, err = cl.doRequest(req)
 	if err != nil && strings.Index(err.Error(), "bad response") != -1 {
 		return true, errors.New(name + " job couldn't be found")
 	} else if err != nil {
@@ -132,14 +136,13 @@ func (cl Client) KillTasks(name string) (bool, error) {
 	return true, nil
 }
 
-// request makes a request to the given endpoint
-func (cl Client) request(verb, endpoint string) ([]byte, error) {
+// doRequest makes a request to Chronos by the given request
+func (cl Client) doRequest(req *http.Request) ([]byte, error) {
 
 	// Init a client
 	client := &http.Client{}
 
 	// Do request
-	req, err := http.NewRequest(verb, cl.URL+endpoint, nil)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
