@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // Client represents the Chronos client interface
@@ -68,7 +69,7 @@ func (cl Client) PrintJobs(pretty bool) error {
 	return nil
 }
 
-// DeleteJob deletes a Chronos job
+// DeleteJob deletes a Chronos job by the given job name
 func (cl Client) DeleteJob(jobName string) (bool, error) {
 
 	// Check job
@@ -80,11 +81,29 @@ func (cl Client) DeleteJob(jobName string) (bool, error) {
 	res, err := cl.request("DELETE", "/scheduler/job/"+jobName)
 	if err != nil {
 		return false, errors.New("failed to delete job due to " + err.Error())
+	} else if bytes.Index(res, []byte("not found")) != -1 {
+		//if strings.Index(string(res), "not found") != -1 {
+		return true, errors.New(jobName + " job couldn't be found")
 	}
 
-	//if strings.Index(string(res), "not found") != -1 {
-	if bytes.Index(res, []byte("not found")) != -1 {
+	return true, nil
+}
+
+// KillTasks kills Chronos job tasks by the given job name
+func (cl Client) KillTasks(jobName string) (bool, error) {
+
+	// Check job
+	if jobName == "" {
+		return false, errors.New("invalid job name")
+	}
+
+	// Delete job
+	_, err := cl.request("DELETE", "/scheduler/task/kill/"+jobName)
+
+	if err != nil && strings.Index(err.Error(), "bad response") != -1 {
 		return true, errors.New(jobName + " job couldn't be found")
+	} else if err != nil {
+		return false, errors.New("failed to kill tasks due to " + err.Error())
 	}
 
 	return true, nil
@@ -108,6 +127,10 @@ func (cl Client) request(verb string, endpoint string) ([]byte, error) {
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return data, errors.New("bad response: " + fmt.Sprintf("%d", resp.StatusCode))
 	}
 
 	return data, nil
