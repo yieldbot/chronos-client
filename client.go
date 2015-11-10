@@ -22,7 +22,7 @@ type Client struct {
 	URL string
 }
 
-// Jobs returns Chronos jobs
+// Jobs returns the Chronos jobs
 func (cl Client) Jobs() ([]Job, error) {
 
 	// Get jobs
@@ -41,7 +41,7 @@ func (cl Client) Jobs() ([]Job, error) {
 	return jobs, nil
 }
 
-// PrintJobs prints jobs
+// PrintJobs prints the Chronos jobs
 func (cl Client) PrintJobs(pretty bool) error {
 
 	// Get jobs
@@ -137,7 +137,7 @@ func (cl Client) DeleteJob(name string) (bool, error) {
 	return true, nil
 }
 
-// KillTasks kills Chronos job tasks by the given job name
+// KillTasks kills the Chronos job tasks by the given job name
 func (cl Client) KillTasks(name string) (bool, error) {
 
 	// Check job
@@ -157,7 +157,7 @@ func (cl Client) KillTasks(name string) (bool, error) {
 	return true, nil
 }
 
-// doRequest makes a request to Chronos by the given request
+// doRequest makes a request to Chronos REST API by the given request
 func (cl Client) doRequest(req *http.Request) ([]byte, error) {
 
 	// Init a client
