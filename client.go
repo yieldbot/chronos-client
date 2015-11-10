@@ -70,11 +70,11 @@ func (cl Client) PrintJobs(pretty bool) error {
 	return nil
 }
 
-// AddJob adds a Chronos job by the given json content
-func (cl Client) AddJob(jsonc string) (bool, error) {
+// AddJob adds a Chronos job by the given job json content
+func (cl Client) AddJob(jsonContent string) (bool, error) {
 
 	// Check job
-	jsonb := []byte(jsonc)
+	jsonb := []byte(jsonContent)
 	var job Job
 	if err := json.Unmarshal(jsonb, &job); err != nil {
 		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
@@ -92,10 +92,10 @@ func (cl Client) AddJob(jsonc string) (bool, error) {
 }
 
 // AddDepJob adds a Chronos dependent job by the given json content
-func (cl Client) AddDepJob(jsonc string) (bool, error) {
+func (cl Client) AddDepJob(jsonContent string) (bool, error) {
 
 	// Check job
-	jsonb := []byte(jsonc)
+	jsonb := []byte(jsonContent)
 	var job Job
 	if err := json.Unmarshal(jsonb, &job); err != nil {
 		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
@@ -179,14 +179,14 @@ func (cl Client) KillJobTasks(name string) (bool, error) {
 }
 
 // UpdateJobTaskProgress updates a Chronos job task progress by the given json content
-func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonc string) (bool, error) {
+func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonContent string) (bool, error) {
 
 	// Check job
 	if jobName == "" {
 		return false, errors.New("invalid job name")
 	}
 
-	jsonb := []byte(jsonc)
+	jsonb := []byte(jsonContent)
 	var job Job
 	if err := json.Unmarshal(jsonb, &job); err != nil {
 		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
