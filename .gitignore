@@ -1,0 +1,14 @@
+.DS_Store
+.idea
+.settings
+.env
+*.log
+*.heapsnapshot
+*.pprof
+.coverrun
+.coverdata
+cover.out
+xunit.xml
+tmp/
+logs/
+reports/
