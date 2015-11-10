@@ -91,6 +91,27 @@ func (cl Client) AddJob(jsonc string) (bool, error) {
 	return true, nil
 }
 
+// AddDepJob adds a Chronos dependent job by the given json content
+func (cl Client) AddDepJob(jsonc string) (bool, error) {
+
+	// Check job
+	jsonb := []byte(jsonc)
+	var job Job
+	if err := json.Unmarshal(jsonb, &job); err != nil {
+		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
+	}
+
+	// Add job
+	req, err := http.NewRequest("POST", cl.URL+"/scheduler/dependency", bytes.NewBuffer(jsonb))
+	req.Header.Set("Content-Type", "application/json")
+	_, err = cl.doRequest(req)
+	if err != nil {
+		return false, errors.New("failed to add dependent job due to " + err.Error())
+	}
+
+	return true, nil
+}
+
 // RunJob runs a Chronos job by the given job name
 func (cl Client) RunJob(name, args string) (bool, error) {
 
