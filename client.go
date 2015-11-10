@@ -4,7 +4,7 @@
  * For the full copyright and license information, please view the LICENSE.txt file.
  */
 
-// client provides Chronos operations
+// Package client provides Chronos operations
 package client
 
 import (
