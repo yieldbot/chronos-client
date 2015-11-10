@@ -51,21 +51,21 @@ func (cl Client) PrintJobs(pretty bool) error {
 	}
 
 	// Parse jobs
-	var jsonb []byte
+	var buf []byte
 
 	// If pretty is true then
 	if pretty {
-		jsonb, err = json.MarshalIndent(jobs, "", "  ")
+		buf, err = json.MarshalIndent(jobs, "", "  ")
 	} else {
 		// Otherwise just parse it
-		jsonb, err = json.Marshal(jobs)
+		buf, err = json.Marshal(jobs)
 	}
 
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("%s", jsonb)
+	fmt.Printf("%s", buf)
 
 	return nil
 }
@@ -74,14 +74,14 @@ func (cl Client) PrintJobs(pretty bool) error {
 func (cl Client) AddJob(jsonContent string) (bool, error) {
 
 	// Check job
-	jsonb := []byte(jsonContent)
+	buf := []byte(jsonContent)
 	var job Job
-	if err := json.Unmarshal(jsonb, &job); err != nil {
+	if err := json.Unmarshal(buf, &job); err != nil {
 		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
 	}
 
 	// Add job
-	req, err := http.NewRequest("POST", cl.URL+"/scheduler/iso8601", bytes.NewBuffer(jsonb))
+	req, err := http.NewRequest("POST", cl.URL+"/scheduler/iso8601", bytes.NewBuffer(buf))
 	req.Header.Set("Content-Type", "application/json")
 	_, err = cl.doRequest(req)
 	if err != nil {
@@ -95,14 +95,14 @@ func (cl Client) AddJob(jsonContent string) (bool, error) {
 func (cl Client) AddDepJob(jsonContent string) (bool, error) {
 
 	// Check job
-	jsonb := []byte(jsonContent)
+	buf := []byte(jsonContent)
 	var job Job
-	if err := json.Unmarshal(jsonb, &job); err != nil {
+	if err := json.Unmarshal(buf, &job); err != nil {
 		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
 	}
 
 	// Add job
-	req, err := http.NewRequest("POST", cl.URL+"/scheduler/dependency", bytes.NewBuffer(jsonb))
+	req, err := http.NewRequest("POST", cl.URL+"/scheduler/dependency", bytes.NewBuffer(buf))
 	req.Header.Set("Content-Type", "application/json")
 	_, err = cl.doRequest(req)
 	if err != nil {
@@ -186,9 +186,9 @@ func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonContent string) (boo
 		return false, errors.New("invalid job name")
 	}
 
-	jsonb := []byte(jsonContent)
+	buf := []byte(jsonContent)
 	var job Job
-	if err := json.Unmarshal(jsonb, &job); err != nil {
+	if err := json.Unmarshal(buf, &job); err != nil {
 		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
 	}
 
@@ -197,7 +197,7 @@ func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonContent string) (boo
 	}
 
 	// Add job
-	req, err := http.NewRequest("POST", cl.URL+"/scheduler/job/"+jobName+"/task/"+taskID+"/progress", bytes.NewBuffer(jsonb))
+	req, err := http.NewRequest("POST", cl.URL+"/scheduler/job/"+jobName+"/task/"+taskID+"/progress", bytes.NewBuffer(buf))
 	req.Header.Set("Content-Type", "application/json")
 	_, err = cl.doRequest(req)
 	if err != nil {
