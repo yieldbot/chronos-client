@@ -37,7 +37,6 @@ func (cl Client) Jobs() ([]Job, error) {
 	}
 
 	return jobs, nil
-	return nil, nil
 }
 
 // PrintJobs prints jobs
