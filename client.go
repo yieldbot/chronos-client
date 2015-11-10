@@ -70,6 +70,27 @@ func (cl Client) PrintJobs(pretty bool) error {
 	return nil
 }
 
+// AddJob adds a Chronos job by the given json content
+func (cl Client) AddJob(jsonc string) (bool, error) {
+
+	// Check job
+	jsonb := []byte(jsonc)
+	var job Job
+	if err := json.Unmarshal(jsonb, &job); err != nil {
+		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
+	}
+
+	// Add job
+	req, err := http.NewRequest("POST", cl.URL+"/scheduler/iso8601", bytes.NewBuffer(jsonb))
+	req.Header.Set("Content-Type", "application/json")
+	_, err = cl.doRequest(req)
+	if err != nil {
+		return false, errors.New("failed to add job due to " + err.Error())
+	}
+
+	return true, nil
+}
+
 // RunJob runs a Chronos job by the given job name
 func (cl Client) RunJob(name, args string) (bool, error) {
 
