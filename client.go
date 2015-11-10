@@ -158,8 +158,8 @@ func (cl Client) DeleteJob(name string) (bool, error) {
 	return true, nil
 }
 
-// KillTasks kills the Chronos job tasks by the given job name
-func (cl Client) KillTasks(name string) (bool, error) {
+// KillJobTasks kills the Chronos job tasks by the given job name
+func (cl Client) KillJobTasks(name string) (bool, error) {
 
 	// Check job
 	if name == "" {
