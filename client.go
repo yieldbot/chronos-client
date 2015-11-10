@@ -89,6 +89,25 @@ func (cl Client) DeleteJob(jobName string) (bool, error) {
 	return true, nil
 }
 
+// RunJob runs a Chronos job by the given job name
+func (cl Client) RunJob(jobName string) (bool, error) {
+
+	// Check job
+	if jobName == "" {
+		return false, errors.New("invalid job name")
+	}
+
+	// Delete job
+	res, err := cl.request("PUT", "/scheduler/job/"+jobName)
+	if bytes.Index(res, []byte("not found")) != -1 {
+		return true, errors.New(jobName + " job couldn't be found")
+	} else if err != nil {
+		return false, errors.New("failed to run job due to " + err.Error())
+	}
+
+	return true, nil
+}
+
 // KillTasks kills Chronos job tasks by the given job name
 func (cl Client) KillTasks(jobName string) (bool, error) {
 
@@ -99,7 +118,6 @@ func (cl Client) KillTasks(jobName string) (bool, error) {
 
 	// Delete job
 	_, err := cl.request("DELETE", "/scheduler/task/kill/"+jobName)
-
 	if err != nil && strings.Index(err.Error(), "bad response") != -1 {
 		return true, errors.New(jobName + " job couldn't be found")
 	} else if err != nil {
