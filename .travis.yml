@@ -16,4 +16,4 @@ install:
 script:
   - OUT=`gofmt -l .`; if [ "$OUT" ]; then echo $OUT; exit 1; fi
   - OUT=`golint ./...`; if [ "$OUT" ]; then echo $OUT; exit 1; fi
-  - OUT=`go vet ./...`; if [ "$OUT" ]; then echo $OUT; exit 1; fi
+  - go vet ./...
