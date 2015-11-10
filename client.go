@@ -128,7 +128,7 @@ func (cl Client) KillTasks(name string) (bool, error) {
 }
 
 // request makes a request to the given endpoint
-func (cl Client) request(verb string, endpoint string) ([]byte, error) {
+func (cl Client) request(verb, endpoint string) ([]byte, error) {
 
 	// Init a client
 	client := &http.Client{}
