@@ -90,15 +90,20 @@ func (cl Client) DeleteJob(name string) (bool, error) {
 }
 
 // RunJob runs a Chronos job by the given job name
-func (cl Client) RunJob(name string) (bool, error) {
+func (cl Client) RunJob(name, args string) (bool, error) {
 
 	// Check job
 	if name == "" {
 		return false, errors.New("invalid job name")
 	}
 
+	query := name
+	if args != "" {
+		query += fmt.Sprintf("?arguments=%s", args)
+	}
+
 	// Delete job
-	res, err := cl.request("PUT", "/scheduler/job/"+name)
+	res, err := cl.request("PUT", "/scheduler/job/"+query)
 	if bytes.Index(res, []byte("not found")) != -1 {
 		return true, errors.New(name + " job couldn't be found")
 	} else if err != nil {
