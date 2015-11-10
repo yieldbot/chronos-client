@@ -178,6 +178,35 @@ func (cl Client) KillJobTasks(name string) (bool, error) {
 	return true, nil
 }
 
+// UpdateJobTaskProgress updates a Chronos job task progress by the given json content
+func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonc string) (bool, error) {
+
+	// Check job
+	if jobName == "" {
+		return false, errors.New("invalid job name")
+	}
+
+	jsonb := []byte(jsonc)
+	var job Job
+	if err := json.Unmarshal(jsonb, &job); err != nil {
+		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
+	}
+
+	if taskID == "" {
+		return false, errors.New("invalid task id")
+	}
+
+	// Add job
+	req, err := http.NewRequest("POST", cl.URL+"/scheduler/job/"+jobName+"/task/"+taskID+"/progress", bytes.NewBuffer(jsonb))
+	req.Header.Set("Content-Type", "application/json")
+	_, err = cl.doRequest(req)
+	if err != nil {
+		return false, errors.New("failed to update job task progress due to " + err.Error())
+	}
+
+	return true, nil
+}
+
 // doRequest makes a request to Chronos REST API by the given request
 func (cl Client) doRequest(req *http.Request) ([]byte, error) {
 
