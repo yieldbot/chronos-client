@@ -18,7 +18,7 @@ import (
 
 // Client represents the Chronos client interface
 type Client struct {
-URL string
+	URL string
 }
 
 // Jobs returns Chronos jobs
@@ -37,7 +37,7 @@ func (cl Client) Jobs() ([]Job, error) {
 	}
 
 	return jobs, nil
-return nil, nil
+	return nil, nil
 }
 
 // PrintJobs prints jobs
