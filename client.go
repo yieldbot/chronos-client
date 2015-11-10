@@ -200,7 +200,7 @@ func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonContent string) (boo
 	return true, nil
 }
 
-// doRequest makes a request to Chronos REST API by the given request
+// doRequest makes a request to Chronos REST API
 func (cl Client) doRequest(req *http.Request) ([]byte, error) {
 
 	// Init a client
