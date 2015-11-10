@@ -70,37 +70,37 @@ func (cl Client) PrintJobs(pretty bool) error {
 }
 
 // DeleteJob deletes a Chronos job by the given job name
-func (cl Client) DeleteJob(jobName string) (bool, error) {
+func (cl Client) DeleteJob(name string) (bool, error) {
 
 	// Check job
-	if jobName == "" {
+	if name == "" {
 		return false, errors.New("invalid job name")
 	}
 
 	// Delete job
-	res, err := cl.request("DELETE", "/scheduler/job/"+jobName)
+	res, err := cl.request("DELETE", "/scheduler/job/"+name)
 	if err != nil {
 		return false, errors.New("failed to delete job due to " + err.Error())
 	} else if bytes.Index(res, []byte("not found")) != -1 {
 		//if strings.Index(string(res), "not found") != -1 {
-		return true, errors.New(jobName + " job couldn't be found")
+		return true, errors.New(name + " job couldn't be found")
 	}
 
 	return true, nil
 }
 
 // RunJob runs a Chronos job by the given job name
-func (cl Client) RunJob(jobName string) (bool, error) {
+func (cl Client) RunJob(name string) (bool, error) {
 
 	// Check job
-	if jobName == "" {
+	if name == "" {
 		return false, errors.New("invalid job name")
 	}
 
 	// Delete job
-	res, err := cl.request("PUT", "/scheduler/job/"+jobName)
+	res, err := cl.request("PUT", "/scheduler/job/"+name)
 	if bytes.Index(res, []byte("not found")) != -1 {
-		return true, errors.New(jobName + " job couldn't be found")
+		return true, errors.New(name + " job couldn't be found")
 	} else if err != nil {
 		return false, errors.New("failed to run job due to " + err.Error())
 	}
@@ -109,17 +109,17 @@ func (cl Client) RunJob(jobName string) (bool, error) {
 }
 
 // KillTasks kills Chronos job tasks by the given job name
-func (cl Client) KillTasks(jobName string) (bool, error) {
+func (cl Client) KillTasks(name string) (bool, error) {
 
 	// Check job
-	if jobName == "" {
+	if name == "" {
 		return false, errors.New("invalid job name")
 	}
 
 	// Delete job
-	_, err := cl.request("DELETE", "/scheduler/task/kill/"+jobName)
+	_, err := cl.request("DELETE", "/scheduler/task/kill/"+name)
 	if err != nil && strings.Index(err.Error(), "bad response") != -1 {
-		return true, errors.New(jobName + " job couldn't be found")
+		return true, errors.New(name + " job couldn't be found")
 	} else if err != nil {
 		return false, errors.New("failed to kill tasks due to " + err.Error())
 	}
