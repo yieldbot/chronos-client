@@ -178,26 +178,19 @@ func (cl Client) KillJobTasks(jobName string) (bool, error) {
 	return true, nil
 }
 
-// UpdateJobTaskProgress updates a Chronos job task progress by the given json content
+// UpdateJobTaskProgress updates a Chronos job task progress
 func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonContent string) (bool, error) {
 
-	// Check job
+	// Check job and task
 	if jobName == "" {
 		return false, errors.New("invalid job name")
 	}
-
-	buf := []byte(jsonContent)
-	var job Job
-	if err := json.Unmarshal(buf, &job); err != nil {
-		return false, errors.New("failed to unmarshal JSON data due to " + err.Error())
-	}
-
 	if taskID == "" {
 		return false, errors.New("invalid task id")
 	}
 
-	// Add job
-	req, err := http.NewRequest("POST", cl.URL+"/scheduler/job/"+jobName+"/task/"+taskID+"/progress", bytes.NewBuffer(buf))
+	// Update job task progress
+	req, err := http.NewRequest("POST", cl.URL+"/scheduler/job/"+jobName+"/task/"+taskID+"/progress", bytes.NewBuffer([]byte(jsonContent)))
 	req.Header.Set("Content-Type", "application/json")
 	_, err = cl.doRequest(req)
 	if err != nil {
