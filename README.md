@@ -86,8 +86,8 @@ For the full copyright and license information, please view the LICENSE.txt file
 [godoc-url]: https://godoc.org/github.com/yieldbot/chronos-client
 [godoc-image]: https://godoc.org/github.com/yieldbot/chronos-client?status.svg
 
-[release-url]: https://github.com/yieldbot/chronos-client/releases
-[release-image]: https://img.shields.io/badge/release-unknown-blue.svg
+[release-url]: https://github.com/yieldbot/chronos-client/releases/tag/v1.0.0
+[release-image]: https://img.shields.io/badge/release-v1.0.0-blue.svg
 
 [coverage-url]: https://coveralls.io/github/yieldbot/chronos-client?branch=master
 [coverage-image]: https://coveralls.io/repos/yieldbot/chronos-client/badge.svg?branch=master&service=github)
