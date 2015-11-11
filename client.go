@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -65,7 +66,7 @@ func (cl Client) PrintJobs(pretty bool) error {
 		return err
 	}
 
-	fmt.Printf("%s", buf)
+	os.Stdout.Write(buf)
 
 	return nil
 }
