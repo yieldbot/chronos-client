@@ -1,6 +1,6 @@
 ## chronos-client
 
-[![Build Status][travis-image]][travis-url] [![Coverage][coverage-image]][coverage-url] [![GoDoc][godoc-image]][godoc-url] [![Release][release-image]][release-url]
+[![Build Status][travis-image]][travis-url] [![GoDoc][godoc-image]][godoc-url] [![Release][release-image]][release-url]
 
 A Go Chronos client library that provides Chronos operations.
 
