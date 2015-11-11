@@ -4,8 +4,6 @@
 
 A Go Chronos client library that provides Chronos operations.
 
-# UNDER DEVELOPMENT
-
 ### Installation
 
 ```
@@ -14,7 +12,68 @@ go get github.com/yieldbot/chronos-client
 
 ### Usage
 
-TBD
+#### Getting jobs
+
+See [jobs.go](examples/jobs/jobs.go) for full code.
+
+```go
+jobs, err := chronos.Client.Jobs()
+if err != nil {
+  log.Fatal(err)
+}
+for _, j := range jobs {
+  fmt.Printf("%s\n", j.Name)
+}
+```
+
+#### Adding a job
+
+See [add.go](examples/add/add.go) for full code.
+
+```go
+var j = `{"schedule": "R/2015-11-09T00:00:00Z/PT24H", "name": "test-1", "epsilon": "PT30M", "command": "echo test1 && sleep 60", "owner": "localhost@localhsot", "async": false}`
+_, err := chronos.Client.AddJob(j)
+if err != nil {
+  log.Fatal(err)
+}
+fmt.Printf("The job is added\n")
+```
+
+#### Running a job
+
+See [run.go](examples/run/run.go) for full code.
+
+```go
+_, err := chronos.Client.RunJob("test-1", "")
+if err != nil {
+  log.Fatal(err)
+}
+fmt.Printf("test-1 job is running\n")
+```
+
+#### Killing job tasks
+
+See [killtasks.go](examples/killtasks/killtasks.go) for full code.
+
+```go
+_, err := chronos.Client.KillJobTasks("test-1")
+if err != nil {
+  log.Fatal(err)
+}
+fmt.Printf("test-1 job tasks are killed\n")
+```
+
+#### Deleting a job
+
+See [delete.go](examples/delete/delete.go) for full code.
+
+```go
+_, err := chronos.Client.DeleteJob("test-1")
+if err != nil {
+  log.Fatal(err)
+}
+fmt.Printf("test-1 job is deleted\n")
+```
 
 ### License
 
