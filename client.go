@@ -138,6 +138,26 @@ func (cl Client) RunJob(jobName, args string) (bool, error) {
 	return true, nil
 }
 
+// KillJobTasks kills the Chronos job tasks
+func (cl Client) KillJobTasks(jobName string) (bool, error) {
+
+	// Check job
+	if jobName == "" {
+		return false, errors.New("invalid job name")
+	}
+
+	// Kill job tasks
+	req, err := http.NewRequest("DELETE", cl.URL+"/scheduler/task/kill/"+jobName, nil)
+	_, err = cl.doRequest(req)
+	if err != nil && strings.Index(err.Error(), "bad response") != -1 {
+		return true, errors.New(jobName + " job couldn't be found")
+	} else if err != nil {
+		return false, errors.New("failed to kill tasks due to " + err.Error())
+	}
+
+	return true, nil
+}
+
 // DeleteJob deletes a Chronos job
 func (cl Client) DeleteJob(jobName string) (bool, error) {
 
@@ -154,26 +174,6 @@ func (cl Client) DeleteJob(jobName string) (bool, error) {
 	} else if bytes.Index(res, []byte("not found")) != -1 {
 		//if strings.Index(string(res), "not found") != -1 {
 		return true, errors.New(jobName + " job couldn't be found")
-	}
-
-	return true, nil
-}
-
-// KillJobTasks kills the Chronos job tasks
-func (cl Client) KillJobTasks(jobName string) (bool, error) {
-
-	// Check job
-	if jobName == "" {
-		return false, errors.New("invalid job name")
-	}
-
-	// Kill job tasks
-	req, err := http.NewRequest("DELETE", cl.URL+"/scheduler/task/kill/"+jobName, nil)
-	_, err = cl.doRequest(req)
-	if err != nil && strings.Index(err.Error(), "bad response") != -1 {
-		return true, errors.New(jobName + " job couldn't be found")
-	} else if err != nil {
-		return false, errors.New("failed to kill tasks due to " + err.Error())
 	}
 
 	return true, nil
