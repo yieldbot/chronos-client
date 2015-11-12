@@ -16,7 +16,7 @@ var (
 
 func init() {
 	// Init the Chronos client
-	URL = "localhost:8080"
+	URL = "http://localhost:8080"
 	if os.Getenv("CHRONOS_URL") != "" {
 		URL = os.Getenv("CHRONOS_URL")
 	}
