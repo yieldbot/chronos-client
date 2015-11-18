@@ -14,13 +14,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 )
 
 // Client represents the Chronos client interface
 type Client struct {
-	URL string
+	URL      string
+	ProxyURL *url.URL
 }
 
 // Jobs returns the Chronos jobs
@@ -218,7 +220,13 @@ func (cl Client) DepGraph() (string, error) {
 func (cl Client) doRequest(req *http.Request) ([]byte, error) {
 
 	// Init a client
-	client := &http.Client{}
+	var client *http.Client
+
+	if cl.ProxyURL != nil {
+		client = &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(cl.ProxyURL)}}
+	} else {
+		client = &http.Client{}
+	}
 
 	// Do request
 	resp, err := client.Do(req)
