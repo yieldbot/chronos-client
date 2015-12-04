@@ -29,7 +29,7 @@ type Client struct {
 func (cl Client) Jobs() ([]Job, error) {
 
 	// Get jobs
-	req, err := http.NewRequest("GET", cl.URL+"/scheduler/jobs", nil)
+	req, err := http.NewRequest("GET", cl.chronosUrl()+"/scheduler/jobs", nil)
 	res, err := cl.doRequest(req)
 	if err != nil {
 		return nil, errors.New("failed to fetch jobs due to " + err.Error())
@@ -84,7 +84,7 @@ func (cl Client) AddJob(jsonContent string) (bool, error) {
 	}
 
 	// Add job
-	req, err := http.NewRequest("POST", cl.URL+"/scheduler/iso8601", bytes.NewBuffer(buf))
+	req, err := http.NewRequest("POST", cl.chronosUrl()+"/scheduler/iso8601", bytes.NewBuffer(buf))
 	req.Header.Set("Content-Type", "application/json")
 	_, err = cl.doRequest(req)
 	if err != nil {
@@ -105,7 +105,7 @@ func (cl Client) AddDepJob(jsonContent string) (bool, error) {
 	}
 
 	// Add job
-	req, err := http.NewRequest("POST", cl.URL+"/scheduler/dependency", bytes.NewBuffer(buf))
+	req, err := http.NewRequest("POST", cl.chronosUrl()+"/scheduler/dependency", bytes.NewBuffer(buf))
 	req.Header.Set("Content-Type", "application/json")
 	_, err = cl.doRequest(req)
 	if err != nil {
@@ -129,7 +129,7 @@ func (cl Client) RunJob(jobName, args string) (bool, error) {
 	}
 
 	// Run job
-	req, err := http.NewRequest("PUT", cl.URL+"/scheduler/job/"+query, nil)
+	req, err := http.NewRequest("PUT", cl.chronosUrl()+"/scheduler/job/"+query, nil)
 	res, err := cl.doRequest(req)
 	if bytes.Index(res, []byte("not found")) != -1 {
 		return true, errors.New(jobName + " job couldn't be found")
@@ -149,7 +149,7 @@ func (cl Client) KillJobTasks(jobName string) (bool, error) {
 	}
 
 	// Kill job tasks
-	req, err := http.NewRequest("DELETE", cl.URL+"/scheduler/task/kill/"+jobName, nil)
+	req, err := http.NewRequest("DELETE", cl.chronosUrl()+"/scheduler/task/kill/"+jobName, nil)
 	_, err = cl.doRequest(req)
 	if err != nil && strings.Index(err.Error(), "bad response") != -1 {
 		return true, errors.New(jobName + " job couldn't be found")
@@ -169,7 +169,7 @@ func (cl Client) DeleteJob(jobName string) (bool, error) {
 	}
 
 	// Delete job
-	req, err := http.NewRequest("DELETE", cl.URL+"/scheduler/job/"+jobName, nil)
+	req, err := http.NewRequest("DELETE", cl.chronosUrl()+"/scheduler/job/"+jobName, nil)
 	res, err := cl.doRequest(req)
 	if err != nil {
 		return false, errors.New("failed to delete job due to " + err.Error())
@@ -193,7 +193,7 @@ func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonContent string) (boo
 	}
 
 	// Update job task progress
-	req, err := http.NewRequest("POST", cl.URL+"/scheduler/job/"+jobName+"/task/"+taskID+"/progress", bytes.NewBuffer([]byte(jsonContent)))
+	req, err := http.NewRequest("POST", cl.chronosUrl()+"/scheduler/job/"+jobName+"/task/"+taskID+"/progress", bytes.NewBuffer([]byte(jsonContent)))
 	req.Header.Set("Content-Type", "application/json")
 	_, err = cl.doRequest(req)
 	if err != nil {
@@ -207,7 +207,7 @@ func (cl Client) UpdateJobTaskProgress(jobName, taskID, jsonContent string) (boo
 func (cl Client) DepGraph() (string, error) {
 
 	// Get the graph
-	req, err := http.NewRequest("GET", cl.URL+"/scheduler/graph/dot", nil)
+	req, err := http.NewRequest("GET", cl.chronosUrl()+"/scheduler/graph/dot", nil)
 	res, err := cl.doRequest(req)
 	if err != nil {
 		return "", errors.New("failed to fetch graph due to " + err.Error())
@@ -246,4 +246,9 @@ func (cl Client) doRequest(req *http.Request) ([]byte, error) {
 	}
 
 	return data, nil
+}
+
+// chronosUrl returns the Chronos url
+func (cl Client) chronosUrl() string {
+	return strings.TrimSuffix(cl.URL, "/")
 }
