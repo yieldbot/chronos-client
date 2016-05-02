@@ -1,6 +1,6 @@
 /*
  * chronos-client
- * Copyright (c) 2015 Yieldbot, Inc. (http://github.com/yieldbot/chronos-client)
+ * Copyright (c) 2015 Yieldbot, Inc.
  * For the full copyright and license information, please view the LICENSE.txt file.
  */
 
