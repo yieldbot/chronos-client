@@ -21,6 +21,7 @@ import (
 
 // Client represents the Chronos client interface
 type Client struct {
+	Client   *http.Client
 	URL      string
 	ProxyURL *url.URL
 }
@@ -220,12 +221,14 @@ func (cl Client) DepGraph() (string, error) {
 func (cl Client) doRequest(req *http.Request) ([]byte, error) {
 
 	// Init a client
-	var client *http.Client
+	client := cl.Client
 
 	if cl.ProxyURL != nil {
 		client = &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(cl.ProxyURL)}}
 	} else {
-		client = &http.Client{}
+		if cl.Client == nil {
+			client = &http.Client{}
+		}
 	}
 
 	// Do request
