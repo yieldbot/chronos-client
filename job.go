@@ -13,33 +13,33 @@ type Job struct {
 
 	Name                 string        `json:"name"`
 	Description          string        `json:"description"`
-	Command              string        `json:"command"`
-	Arguments            []string      `json:"arguments"`
+	Command              string        `json:"command,omitempty"`
+	Arguments            []string      `json:"arguments,omitempty"`
 	Shell                bool          `json:"shell"`
-	Epsilon              string        `json:"epsilon"`
-	Executor             string        `json:"executor"`
-	ExecutorFlags        string        `json:"executorFlags"`
-	Retries              int           `json:"retries"`
-	Owner                string        `json:"owner"`
-	OwnerName            string        `json:"ownerName"`
-	Async                bool          `json:"async"`
-	SuccessCount         int           `json:"successCount"`
-	ErrorCount           int           `json:"errorCount"`
-	LastSuccess          string        `json:"lastSuccess"`
-	LastError            string        `json:"lastError"`
+	Epsilon              string        `json:"epsilon,omitempty"`
+	Executor             string        `json:"executor,omitempty"`
+	ExecutorFlags        string        `json:"executorFlags,omitempty"`
+	Retries              int           `json:"retries,omitempty"`
+	Owner                string        `json:"owner,omitempty"`
+	OwnerName            string        `json:"ownerName,omitempty"`
+	Async                bool          `json:"async,omitempty"`
+	SuccessCount         int           `json:"successCount,omitempty"`
+	ErrorCount           int           `json:"errorCount,omitempty"`
+	LastSuccess          string        `json:"lastSuccess,omitempty"`
+	LastError            string        `json:"lastError,omitempty"`
 	Cpus                 float64       `json:"cpus"`
 	Mem                  float64       `json:"mem"`
-	Disk                 float64       `json:"disk"`
+	Disk                 float64       `json:"disk,omitempty"`
 	Disabled             bool          `json:"disabled"`
 	Uris                 []string      `json:"uris"`
 	Schedule             string        `json:"schedule"`
-	ScheduleTimeZone     string        `json:"scheduleTimeZone"`
-	Parents              []string      `json:"parents"`
-	RunAsUser            string        `json:"runAsUser"`
+	ScheduleTimeZone     string        `json:"scheduleTimeZone,omitempty"`
+	Parents              []string      `json:"parents,omitempty"`
+	RunAsUser            string        `json:"runAsUser,omitempty"`
 	Container            *JobContainer `json:"container"`
 	DataJob              bool          `json:"dataJob"`
 	EnvironmentVariables []*EnvVars    `json:"environmentVariables"`
-	Constraints          [][]string    `json:"constraints"`
+	Constraints          [][]string    `json:"constraints,omitempty"`
 }
 
 // JobContainer represents Chronos job container field
